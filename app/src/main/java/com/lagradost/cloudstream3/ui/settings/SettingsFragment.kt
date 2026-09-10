@@ -186,49 +186,17 @@ class SettingsFragment : BaseFragment<MainSettingsBinding>(
         showToast(activity,"${VideoDownloadManager.downloadStatusEvent.size} :
         ${VideoDownloadManager.downloadProgressEvent.size}") **/
 
-        fun hasProfilePictureFromAccountManagers(accountManagers: Array<AuthRepo>): Boolean {
-            for (syncApi in accountManagers) {
-                val login = syncApi.authUser()
-                val pic = login?.profilePicture ?: continue
-
-                binding.settingsProfilePic.let { imageView ->
-                    imageView.loadImage(pic) {
-                        // Fallback to random error drawable
-                        error { getImageFromDrawable(context ?: return@error null, errorProfilePic) }
-                    }
-                }
-                binding.settingsProfileText.text = login.name
-                return true // sync profile exists
-            }
-            return false // not syncing
-        }
-
-        // display local account information if not syncing
-        if (!hasProfilePictureFromAccountManagers(AccountManager.allApis)) {
-            val activity = activity ?: return
-            val currentAccount = try {
-                DataStoreHelper.accounts.firstOrNull {
-                    it.keyIndex == DataStoreHelper.selectedKeyIndex
-                } ?: activity.let { DataStoreHelper.getDefaultAccount(activity) }
-
-            } catch (t: IllegalStateException) {
-                Log.e("AccountManager", "Activity not found", t)
-                null
-            }
-
-            binding.settingsProfilePic.loadImage(currentAccount?.image)
-            binding.settingsProfileText.text = currentAccount?.name
-        }
-
         binding.apply {
+            settingsProfile.isGone = true
+            settingsProviders.isGone = true
+            settingsExtensions.isGone = true
+            settingsCredits.isGone = true
+
             listOf(
-                settingsGeneral to R.id.action_navigation_global_to_navigation_settings_general,
                 settingsPlayer to R.id.action_navigation_global_to_navigation_settings_player,
-                settingsCredits to R.id.action_navigation_global_to_navigation_settings_account,
+                settingsGeneral to R.id.action_navigation_global_to_navigation_settings_general,
                 settingsUi to R.id.action_navigation_global_to_navigation_settings_ui,
-                settingsProviders to R.id.action_navigation_global_to_navigation_settings_providers,
                 settingsUpdates to R.id.action_navigation_global_to_navigation_settings_updates,
-                settingsExtensions to R.id.action_navigation_global_to_navigation_settings_extensions,
             ).forEach { (view, navigationId) ->
                 view.apply {
                     setOnClickListener {
@@ -243,7 +211,7 @@ class SettingsFragment : BaseFragment<MainSettingsBinding>(
 
             // Default focus on TV
             if (isLayout(TV)) {
-                settingsGeneral.requestFocus()
+                settingsPlayer.requestFocus()
             }
         }
 

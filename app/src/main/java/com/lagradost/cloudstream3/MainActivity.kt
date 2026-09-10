@@ -776,9 +776,6 @@ class MainActivity : AppCompatActivity(), ColorPickerDialogListener, BiometricCa
 
                 for (focusView in arrayOf(
                     R.id.navigation_downloads,
-                    R.id.navigation_home,
-                    R.id.navigation_search,
-                    R.id.navigation_library,
                     R.id.navigation_settings,
                 )) {
                     fromView.findViewById<View?>(focusView)?.nextFocusRightId = targetView
@@ -1347,53 +1344,7 @@ class MainActivity : AppCompatActivity(), ColorPickerDialogListener, BiometricCa
             safe {
                 showToast(R.string.safe_mode_file, Toast.LENGTH_LONG)
             }
-        } else if (lastError == null) {
-            ioSafe {
-                DataStoreHelper.currentHomePage?.let { homeApi ->
-                    mainPluginsLoadedEvent.invoke(loadSinglePlugin(this@MainActivity, homeApi))
-                } ?: run {
-                    mainPluginsLoadedEvent.invoke(false)
-                }
-
-                ioSafe {
-                    if (settingsManager.getBoolean(
-                            getString(R.string.auto_update_plugins_key),
-                            true
-                        )
-                    ) {
-                        PluginManager.___DO_NOT_CALL_FROM_A_PLUGIN_updateAllOnlinePluginsAndLoadThem(
-                            this@MainActivity
-                        )
-                    } else {
-                        ___DO_NOT_CALL_FROM_A_PLUGIN_loadAllOnlinePlugins(this@MainActivity)
-                    }
-
-                    //Automatically download not existing plugins, using mode specified.
-                    val autoDownloadPlugin = AutoDownloadMode.getEnum(
-                        settingsManager.getInt(
-                            getString(R.string.auto_download_plugins_key),
-                            0
-                        )
-                    ) ?: AutoDownloadMode.Disable
-                    if (autoDownloadPlugin != AutoDownloadMode.Disable) {
-                        PluginManager.___DO_NOT_CALL_FROM_A_PLUGIN_downloadNotExistingPluginsAndLoad(
-                            this@MainActivity,
-                            autoDownloadPlugin
-                        )
-                    }
-                }
-
-                ioSafe {
-                    PluginManager.___DO_NOT_CALL_FROM_A_PLUGIN_loadAllLocalPlugins(
-                        this@MainActivity,
-                        false
-                    )
-                }
-
-// Add your channel creation here
-
-            }
-        } else {
+        } else if (lastError != null) {
             val builder: AlertDialog.Builder = AlertDialog.Builder(this)
             builder.setTitle(R.string.safe_mode_title)
             builder.setMessage(R.string.safe_mode_description)
@@ -1628,37 +1579,7 @@ class MainActivity : AppCompatActivity(), ColorPickerDialogListener, BiometricCa
 //            }
 //        }
 
-        // init accounts
-        ioSafe {
-            // we need to run this after we init all apis, otherwise currentSyncApi will fuck itself
-            this@MainActivity.runOnUiThread {
-                // Change library icon with logo of current api in sync
-                libraryViewModel =
-                    ViewModelProvider(this@MainActivity)[LibraryViewModel::class.java]
-                libraryViewModel?.currentApiName?.observe(this@MainActivity) {
-                    val syncAPI = libraryViewModel?.currentSyncApi
-                    Log.i("SYNC_API", "${syncAPI?.name}, ${syncAPI?.idPrefix}")
-                    val icon = if (syncAPI?.idPrefix == localListApi.idPrefix) {
-                        R.drawable.library_icon_selector
-                    } else {
-                        syncAPI?.icon ?: R.drawable.library_icon_selector
-                    }
-
-                    binding?.apply {
-                        navRailView.menu.findItem(R.id.navigation_library)?.setIcon(icon)
-                        navView.menu.findItem(R.id.navigation_library)?.setIcon(icon)
-                    }
-                }
-            }
-        }
-
         SearchResultBuilder.updateCache(this)
-
-        ioSafe {
-            initAll()
-            // No duplicates (which can happen by registerMainAPI)
-            apis = allProviders.distinctBy { it }
-        }
 
         //  val navView: BottomNavigationView = findViewById(R.id.nav_view)
         setUpBackup()
@@ -1789,9 +1710,6 @@ class MainActivity : AppCompatActivity(), ColorPickerDialogListener, BiometricCa
             rail.findViewById<View?>(R.id.navigation_settings)?.nextFocusDownId =
                 R.id.nav_footer_profile_card
             for (id in arrayOf(
-                R.id.navigation_home,
-                R.id.navigation_search,
-                R.id.navigation_library,
                 R.id.navigation_downloads,
                 R.id.navigation_settings
             )) {
@@ -1801,70 +1719,11 @@ class MainActivity : AppCompatActivity(), ColorPickerDialogListener, BiometricCa
 
                 prevView = view
                 prevId = id
-                // Uncomment for focus expand
-                /*if (!isLayout(TV)) {
-                    view.onFocusChangeListener = null
-                } else {
-                    view.onFocusChangeListener =
-                        View.OnFocusChangeListener { v, hasFocus ->
-                            if (hasFocus) {
-                                focus += id
-                                binding?.navRailView?.labelVisibilityMode =
-                                    NavigationRailView.LABEL_VISIBILITY_LABELED
-                                binding?.navRailView?.expand()
-                            } else {
-                                focus -= id
-                                v.post {
-                                    if (focus.isEmpty()) {
-                                        binding?.navRailView?.labelVisibilityMode =
-                                            NavigationRailView.LABEL_VISIBILITY_UNLABELED
-                                        binding?.navRailView?.collapse()
-                                    }
-                                }
-                            }
-                        }
-                }*/
             }
         }
 
         // Navigation button long click functionality to scroll to top
         for (view in listOf(binding?.navView, binding?.navRailView)) {
-            view?.findViewById<View?>(R.id.navigation_home)?.setOnLongClickListener {
-                val recycler = binding?.root?.findViewById<RecyclerView?>(R.id.home_master_recycler)
-                recycler?.smoothScrollToPosition(0)
-                return@setOnLongClickListener recycler != null
-            }
-
-            view?.findViewById<View?>(R.id.navigation_library)?.setOnLongClickListener {
-                val viewPager = binding?.root?.findViewById<ViewPager2?>(R.id.viewpager)
-                    ?: return@setOnLongClickListener false
-                try {
-                    val children = (viewPager[0] as? RecyclerView)?.children
-                        ?: return@setOnLongClickListener false
-                    for (child in children) {
-                        child.findViewById<RecyclerView?>(R.id.page_recyclerview)
-                            ?.smoothScrollToPosition(0)
-                    }
-                } catch (_: IndexOutOfBoundsException) {
-                } catch (t: Throwable) {
-                    logError(t)
-                }
-                return@setOnLongClickListener true
-            }
-
-            view?.findViewById<View?>(R.id.navigation_search)?.setOnLongClickListener {
-                for (recyclerId in arrayOf(
-                    R.id.search_master_recycler,
-                    R.id.search_autofit_results,
-                    R.id.search_history_recycler
-                )) {
-                    val recycler = binding?.root?.findViewById<RecyclerView?>(recyclerId)
-                        ?: return@setOnLongClickListener false
-                    recycler.smoothScrollToPosition(0)
-                }
-                return@setOnLongClickListener true
-            }
-
             view?.findViewById<View?>(R.id.navigation_downloads)?.setOnLongClickListener {
                 val recycler: RecyclerView? = binding?.root?.findViewById(R.id.download_list)
                     ?: binding?.root?.findViewById(R.id.download_child_list)
