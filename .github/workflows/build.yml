@@ -1,4 +1,4 @@
-﻿name: Build SmoothPlay APK
+name: Build SmoothPlay APK
 
 on:
   push:
