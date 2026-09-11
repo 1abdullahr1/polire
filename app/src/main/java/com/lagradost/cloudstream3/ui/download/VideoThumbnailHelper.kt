@@ -28,7 +28,7 @@ object VideoThumbnailHelper {
             return
         }
 
-        imageView.setImageResource(R.drawable.outline_round_gray)
+        imageView.setImageDrawable(null)
         val context = imageView.context.applicationContext
         val tag = video.id
         imageView.tag = tag

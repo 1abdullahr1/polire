@@ -7,7 +7,6 @@ import com.google.android.material.tabs.TabLayout
 import com.lagradost.cloudstream3.MainActivity
 import com.lagradost.cloudstream3.R
 import com.lagradost.cloudstream3.databinding.FragmentDownloadsBinding
-import com.lagradost.cloudstream3.mvvm.observe
 import com.lagradost.cloudstream3.ui.BaseFragment
 import com.lagradost.cloudstream3.ui.player.OfflinePlaybackHelper
 import com.lagradost.cloudstream3.ui.settings.Globals.EMULATOR
@@ -48,7 +47,14 @@ class DownloadFragment : BaseFragment<FragmentDownloadsBinding>(
         openFolder(folder)
     }
 
+    private fun onStoragePermissionChanged(granted: Boolean) {
+        if (granted) {
+            loadVideos(showLoading = true)
+        }
+    }
+
     override fun onDestroyView() {
+        MainActivity.storagePermissionEvent -= ::onStoragePermissionChanged
         activity?.detachBackPressedCallback("Videos")
         super.onDestroyView()
     }
@@ -109,11 +115,7 @@ class DownloadFragment : BaseFragment<FragmentDownloadsBinding>(
             }
         }
 
-        observe(MainActivity.storagePermissionEvent) { granted ->
-            if (granted) {
-                loadVideos(showLoading = true)
-            }
-        }
+        MainActivity.storagePermissionEvent += ::onStoragePermissionChanged
 
         loadVideos(showLoading = true)
     }

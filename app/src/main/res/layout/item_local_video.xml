@@ -35,9 +35,9 @@
                 android:id="@+id/video_thumbnail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/play"
+                android:contentDescription="@string/play_with_app_name"
                 android:scaleType="centerCrop"
-                android:src="@drawable/outline_round_gray" />
+                android:src="@drawable/video_outline" />
 
             <TextView
                 android:id="@+id/video_duration"
@@ -103,7 +103,7 @@
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="8dp"
-            android:contentDescription="@string/play"
+            android:contentDescription="@string/play_with_app_name"
             android:src="@drawable/ic_baseline_play_arrow_24"
             app:tint="?attr/grayTextColor" />
     </LinearLayout>

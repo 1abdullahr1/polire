@@ -162,14 +162,15 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_empty_rescan"
-                style="@style/WhiteM3ElevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:backgroundTint="?attr/primaryGrayBackground"
                 android:text="@string/rescan_videos"
-                android:textColor="?attr/primaryBlackBackground"
+                android:textColor="?attr/textColor"
+                app:cornerRadius="8dp"
                 app:icon="@drawable/ic_refresh"
-                app:iconTint="?attr/primaryBlackBackground" />
+                app:iconTint="?attr/textColor" />
         </LinearLayout>
 
         <!-- Permission required state -->
@@ -201,12 +202,19 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_grant_permission"
-                style="@style/WhiteM3ElevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:backgroundTint="?attr/white"
                 android:text="@string/grant_permission"
-                android:textColor="?attr/primaryBlackBackground" />
+                android:textColor="?attr/primaryBlackBackground"
+                app:cornerRadius="8dp" />
         </LinearLayout>
+
+        <View
+            android:id="@+id/download_storage_appbar"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
     </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -35,7 +35,7 @@
                 android:id="@+id/folder_thumbnail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/folder_text"
+                android:contentDescription="@string/tab_folders"
                 android:scaleType="centerCrop" />
 
             <ImageView
@@ -43,7 +43,7 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_gravity="center"
-                android:contentDescription="@string/folder_text"
+                android:contentDescription="@string/tab_folders"
                 android:src="@drawable/folder_24px"
                 app:tint="?attr/textColor" />
         </androidx.cardview.widget.CardView>
@@ -79,7 +79,7 @@
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:contentDescription="@string/open_in_browser"
+            android:contentDescription="@string/tab_folders"
             android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
             app:tint="?attr/grayTextColor" />
     </LinearLayout>
