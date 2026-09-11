@@ -5,265 +5,90 @@
     android:id="@+id/download_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/primaryGrayBackground"
-    android:orientation="vertical"
+    android:background="?attr/primaryBlackBackground"
     tools:context=".ui.download.DownloadFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/primaryGrayBackground">
-        <!--
-        For Scroll add to LinearLayout
-        app:layout_scrollFlags="scroll|enterAlways"
-        -->
-        <LinearLayout
-            android:id="@+id/download_delete_appbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="?attr/primaryGrayBackground"
-            android:padding="8dp"
-            android:visibility="gone">
-
-            <ImageButton
-                android:id="@+id/btnCancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:src="@drawable/ic_baseline_close_24"
-                android:contentDescription="@string/cancel"
-                android:padding="8dp"
-                android:layout_gravity="center_vertical"
-                android:nextFocusLeft="@id/navigation_downloads"
-                app:tint="?attr/white" />
-
-            <Button
-                android:id="@+id/btnDelete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:text="@string/delete"
-                android:textColor="?attr/white"
-                android:layout_gravity="center_vertical" />
-
-            <TextView
-                android:id="@+id/selectItemsText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:text="@string/downloads_delete_select"
-                android:textColor="?attr/white"
-                android:layout_gravity="center_vertical"
-                android:visibility="gone" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <Button
-                android:id="@+id/btnToggleAll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:text="@string/select_all"
-                android:textColor="?attr/white"
-                android:layout_marginEnd="8dp"
-                android:nextFocusDown="@id/download_list" />
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/download_appbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="56dp"
             android:background="?attr/primaryGrayBackground"
-            android:baselineAligned="false"
             android:focusable="true"
-            android:foreground="@drawable/outline_drawable"
-            android:nextFocusLeft="@id/navigation_downloads"
-            android:nextFocusRight="@id/download_stream_button_tv"
-            android:nextFocusDown="@id/download_list"
-            android:orientation="horizontal">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp">
 
-            <LinearLayout
-                android:id="@+id/download_storage_appbar"
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/go_back"
+                android:src="@drawable/ic_baseline_arrow_back_24"
+                android:visibility="gone"
+                app:tint="?attr/textColor"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/title_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:visibility="visible">
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/title_videos"
+                android:textColor="?attr/textColor"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:text="@string/download_storage_text"
-                    android:textColor="?attr/textColor" />
-
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/download_loading_bytes"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:orientation="vertical"
-                    app:shimmer_auto_start="true"
-                    app:shimmer_base_alpha="0.2"
-                    app:shimmer_duration="@integer/loading_time"
-                    app:shimmer_highlight_alpha="0.3"
-                    tools:ignore="MissingClass"
-                    tools:visibility="gone">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <include layout="@layout/loading_line" />
-
-                        <include layout="@layout/loading_line_short" />
-                    </LinearLayout>
-                </com.facebook.shimmer.ShimmerFrameLayout>
-
-                <LinearLayout
-                    android:id="@+id/download_bytes_bar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    tools:visibility="visible">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="fill_parent"
-                        android:layout_height="12dp"
-                        android:layout_marginBottom="5dp"
-                        android:elevation="0dp"
-                        app:cardCornerRadius="@dimen/storage_radius"
-                        app:cardElevation="0dp"
-                        app:cardMaxElevation="0dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
-
-                            <View
-                                android:id="@+id/download_used"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.5"
-                                android:background="@drawable/storage_bar_left" />
-
-                            <View
-                                android:id="@+id/download_app"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.10"
-                                android:background="@drawable/storage_bar_mid" />
-
-                            <View
-                                android:id="@+id/download_free"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.10"
-                                android:background="@drawable/storage_bar_right" />
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <View
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginEnd="5dp"
-                            android:layout_marginBottom="5dp"
-                            android:background="@drawable/storage_bar_left_box" />
-
-                        <TextView
-                            android:id="@+id/download_used_txt"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:textColor="?attr/textColor"
-                            android:textSize="12sp"
-                            tools:text="Used • 30.58GB" />
-
-                        <View
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_margin="5dp"
-                            android:background="@drawable/storage_bar_mid_box" />
-
-                        <TextView
-                            android:id="@+id/download_app_txt"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:textColor="?attr/textColor"
-                            android:textSize="12sp"
-                            tools:text="App • 30.58GB" />
-
-                        <View
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_margin="5dp"
-                            android:background="@drawable/storage_bar_right_box" />
-
-                        <TextView
-                            android:id="@+id/download_free_txt"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:textColor="?attr/textColor"
-                            android:textSize="12sp"
-                            tools:text="Free • 30.58GB" />
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-
-                android:id="@+id/steam_imageview_holder"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:layout_gravity="center"
-                    android:text="@string/stream"
-                    android:textColor="?attr/textColor" />
-
-                <ImageView
-                    android:id="@+id/download_stream_button_tv"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/outline_drawable"
-
-                    android:contentDescription="@string/stream"
-                    android:focusable="true"
-                    android:nextFocusLeft="@id/download_appbar"
-                    android:nextFocusDown="@id/download_list"
-                    android:padding="8dp"
-
-                    android:src="@drawable/ic_network_stream"
-                    app:tint="?attr/textColor" />
-            </LinearLayout>
+            <ImageButton
+                android:id="@+id/btn_rescan"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/rescan_videos"
+                android:padding="8dp"
+                android:src="@drawable/ic_refresh"
+                app:tint="?attr/textColor" />
         </LinearLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/video_tab_layout"
+            style="@style/Theme.Widget.Tabs"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="?attr/primaryGrayBackground"
+            android:focusable="true"
+            android:paddingHorizontal="10dp"
+            app:layout_scrollFlags="noScroll"
+            app:tabGravity="fill"
+            app:tabIndicator="@drawable/indicator_background"
+            app:tabIndicatorColor="?attr/white"
+            app:tabIndicatorGravity="center"
+            app:tabIndicatorHeight="32dp"
+            app:tabMode="fixed"
+            app:tabRippleColor="?attr/textColor"
+            app:tabSelectedTextColor="?attr/primaryBlackBackground"
+            app:tabTextAppearance="@style/TabNoCaps"
+            app:tabTextColor="?attr/textColor">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_all_videos" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_folders" />
+        </com.google.android.material.tabs.TabLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
@@ -272,112 +97,116 @@
         android:background="?attr/primaryBlackBackground"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/download_loading"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="20dp"
-            app:shimmer_auto_start="true"
-            app:shimmer_base_alpha="0.2"
-            app:shimmer_duration="@integer/loading_time"
-            app:shimmer_highlight_alpha="0.3"
-            tools:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/loading_margin"
-                android:layout_marginEnd="@dimen/loading_margin"
-                android:orientation="vertical">
-
-                <include layout="@layout/loading_downloads" />
-                <include layout="@layout/loading_downloads" />
-                <include layout="@layout/loading_downloads" />
-                <include layout="@layout/loading_downloads" />
-                <include layout="@layout/loading_downloads" />
-                <include layout="@layout/loading_downloads" />
-            </LinearLayout>
-        </com.facebook.shimmer.ShimmerFrameLayout>
-
+        <!-- All videos / Current folder's videos -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/download_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="100dp"
             android:clipToPadding="false"
             android:descendantFocusability="afterDescendants"
-            android:nextFocusUp="@id/download_stream_button_tv"
-            android:nextFocusLeft="@id/navigation_downloads"
-            android:nextFocusDown="@id/download_queue_button"
+            android:paddingTop="6dp"
+            android:paddingBottom="80dp"
             android:tag="@string/tv_no_focus_tag"
-            tools:listitem="@layout/download_header_episode" />
+            tools:listitem="@layout/item_local_video" />
 
-        <LinearLayout
-            android:focusable="true"
-            android:nextFocusUp="@id/download_list"
-            android:foreground="@drawable/outline_drawable"
-            android:id="@+id/download_queue_button"
+        <!-- Folders list -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/folder_list"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="bottom"
-            android:background="?attr/primaryGrayBackground"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:descendantFocusability="afterDescendants"
+            android:paddingTop="6dp"
+            android:paddingBottom="80dp"
+            android:tag="@string/tv_no_focus_tag"
+            android:visibility="gone"
+            tools:listitem="@layout/item_video_folder" />
 
-            <ImageView
-                android:paddingTop="5dp"
-                android:layout_width="20dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center"
-                android:src="@drawable/round_keyboard_arrow_up_24" />
+        <!-- Loading spinner -->
+        <ProgressBar
+            android:id="@+id/download_loading"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="?attr/colorAccent"
+            android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/download_queue_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/download_queue"
-                android:textColor="?attr/textColor" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/text_no_downloads"
+        <!-- Empty state -->
+        <LinearLayout
+            android:id="@+id/empty_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="30dp"
-            android:text="@string/downloads_empty"
             android:gravity="center"
+            android:orientation="vertical"
+            android:padding="24dp"
             android:visibility="gone"
-            tools:visibility="visible" />
-    </FrameLayout>
+            tools:visibility="visible">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="50dp"
-        android:orientation="vertical">
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:contentDescription="@string/no_videos_found"
+                android:src="@drawable/ic_baseline_folder_open_24"
+                app:tint="?attr/grayTextColor" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/open_local_video_button"
-            style="?attr/floatingActionButtonSmallStyle"
+            <TextView
+                android:id="@+id/text_no_downloads"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="@string/no_videos_found"
+                android:textColor="?attr/grayTextColor"
+                android:textSize="15sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_empty_rescan"
+                style="@style/WhiteM3ElevatedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/rescan_videos"
+                android:textColor="?attr/primaryBlackBackground"
+                app:icon="@drawable/ic_refresh"
+                app:iconTint="?attr/primaryBlackBackground" />
+        </LinearLayout>
+
+        <!-- Permission required state -->
+        <LinearLayout
+            android:id="@+id/permission_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="16dp"
-            android:backgroundTint="?attr/primaryGrayBackground"
-            android:contentDescription="@string/open_local_video"
-            android:src="@drawable/netflix_play"
-            app:tint="?attr/textColor"
-            android:tooltipText="@string/open_local_video" />
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="gone">
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/download_stream_button"
-            style="@style/ExtendedFloatingActionButton"
-            android:contentDescription="@string/stream"
-            android:text="@string/stream"
-            android:textColor="?attr/textColor"
-            app:icon="@drawable/ic_network_stream" />
-    </LinearLayout>
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:contentDescription="@string/grant_permission"
+                android:src="@drawable/folder_24px"
+                app:tint="?attr/colorAccent" />
+
+            <TextView
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="@string/permission_required_videos"
+                android:textColor="?attr/textColor"
+                android:textSize="15sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_grant_permission"
+                style="@style/WhiteM3ElevatedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/grant_permission"
+                android:textColor="?attr/primaryBlackBackground" />
+        </LinearLayout>
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

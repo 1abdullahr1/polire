@@ -92,4 +92,22 @@ object OfflinePlaybackHelper {
             replacePlayerNavOptions
         )
     }
+
+    fun playLocalVideo(activity: Activity, video: com.lagradost.cloudstream3.ui.download.LocalVideo) {
+        activity.navigate(
+            R.id.global_to_navigation_player, GeneratorPlayer.newInstance(
+                DownloadFileGenerator(
+                    listOf(
+                        ExtractorUri(
+                            uri = video.uri,
+                            name = video.title,
+                            displayName = video.title,
+                            id = video.id.hashCode()
+                        )
+                    )
+                ), 0
+            ),
+            replacePlayerNavOptions
+        )
+    }
 }

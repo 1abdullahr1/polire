@@ -273,6 +273,18 @@ class MainActivity : AppCompatActivity(), ColorPickerDialogListener, BiometricCa
          * Used by DataStoreHelper to fully reload Navigation Rail header picture
          */
         val reloadAccountEvent = Event<Boolean>()
+        val storagePermissionEvent = Event<Boolean>()
+
+        fun hasStoragePermission(context: Context): Boolean {
+            val permissions = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                arrayOf(android.Manifest.permission.READ_MEDIA_VIDEO)
+            } else {
+                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
+            return permissions.all {
+                androidx.core.content.ContextCompat.checkSelfPermission(context, it) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            }
+        }
 
         /**
          * @return true if the str has launched an app task (be it successful or not)
@@ -844,6 +856,28 @@ class MainActivity : AppCompatActivity(), ColorPickerDialogListener, BiometricCa
     lateinit var syncViewModel: SyncViewModel
     private var libraryViewModel: LibraryViewModel? = null
 
+    val requestStoragePermissionLauncher =
+        registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions()) { result ->
+            val granted = result.values.any { it }
+            storagePermissionEvent.invoke(granted)
+        }
+
+    fun checkAndRequestStoragePermission() {
+        val permissions = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(android.Manifest.permission.READ_MEDIA_VIDEO)
+        } else {
+            arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+        val allGranted = permissions.all {
+            androidx.core.content.ContextCompat.checkSelfPermission(this, it) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        }
+        if (!allGranted) {
+            requestStoragePermissionLauncher.launch(permissions)
+        } else {
+            storagePermissionEvent.invoke(true)
+        }
+    }
+
     /** kinda dirty, however it signals that we should use the watch status as sync or not*/
     var isLocalList: Boolean = false
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
@@ -1339,6 +1373,7 @@ class MainActivity : AppCompatActivity(), ColorPickerDialogListener, BiometricCa
         }
 
         ioSafe { SafeFile.check(this@MainActivity) }
+        checkAndRequestStoragePermission()
 
         if (PluginManager.checkSafeModeFile()) {
             safe {

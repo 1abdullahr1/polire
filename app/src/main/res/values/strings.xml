@@ -27,8 +27,15 @@
     <string name="new_update_format" formatted="true">New update found!\n%1$s -&gt; %2$s</string>
     <string name="filler" formatted="true">Filler</string>
     <string name="duration_format" formatted="true">%d min</string>
-    <string name="app_name">SmoothPlay</string>
-    <string name="play_with_app_name">Play with SmoothPlay</string>
+    <string name="app_name">Polire</string>
+    <string name="play_with_app_name">Play with Polire</string>
+    <string name="tab_all_videos">All Videos</string>
+    <string name="tab_folders">Folders</string>
+    <string name="no_videos_found">No videos found on device</string>
+    <string name="permission_required_videos">Storage permission is required to view and play videos on this device.</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="folder_video_count" formatted="true">%d videos</string>
+    <string name="rescan_videos">Rescan</string>
     <string name="title_home">Home</string>
     <string name="title_search">Search</string>
     <string name="title_downloads">Videos</string>

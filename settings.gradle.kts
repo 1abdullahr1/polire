@@ -17,5 +17,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SmoothPlay"
+rootProject.name = "Polire"
 include(":app", ":shared", ":library", ":docs", ":desktopApp")

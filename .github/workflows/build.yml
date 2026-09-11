@@ -1,4 +1,4 @@
-name: Build SmoothPlay APK
+name: Build Polire APK
 
 on:
   push:
@@ -28,12 +28,12 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
 
-    - name: Build SmoothPlay APK
+    - name: Build Polire APK
       run: ./gradlew assemblePrereleaseDebug --stacktrace
 
-    - name: Upload SmoothPlay APK
+    - name: Upload Polire APK
       uses: actions/upload-artifact@v4
       with:
-        name: SmoothPlay-APK
+        name: Polire-APK
         path: "app/build/outputs/apk/prerelease/debug/*.apk"
         retention-days: 14
