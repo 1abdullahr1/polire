@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.StringRes
 import androidx.core.view.children
+import androidx.core.view.isGone
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.preference.Preference
